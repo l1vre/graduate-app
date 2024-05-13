@@ -12,7 +12,7 @@ export class AuthService {
 		return await this.usersService.create(data);
 	}
 
-	async login(data: LoginDto): Promise<Object> {
+	async login(data: LoginDto): Promise<User> {
 		return await this.usersService.checkPassword(data);
 	}
 

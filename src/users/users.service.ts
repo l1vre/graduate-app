@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+	BadGatewayException,
+	Injectable,
+	NotFoundException,
+	UnauthorizedException
+} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { EntityManager, Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -19,32 +24,26 @@ export class UsersService {
 			data.password = await bcrypt.hash(data.password, salt);
 			const user = new User(data);
 			return await this.entityManager.save(user);
-			
 		} catch (error) {
-			console.log('При создании произошла ошибка: ', error);
-			throw new Error('При создании пользователя произошла ошибка');
+			throw new BadGatewayException(error);
 		}
 	}
 
-	async checkPassword(data: LoginDto): Promise<Object> {
+	async checkPassword(data: LoginDto): Promise<User> {
 		try {
-			const user = await this.userRepository.findOneBy({ login: data.login });
-			if(!user) {
-				console.log('Такого юзера нет');
-				throw new Error('Такого юзера нет');
+			const user = await this.userRepository.findOneBy({
+				login: data.login
+			});
+			if (!user) {
+				throw new NotFoundException();
 			}
 			const isCorrect = await bcrypt.compare(data.password, user.password);
-			return {
-				login: user.login,
-				passwordCorrect: isCorrect
-			};
+			if (!isCorrect) {
+				throw new UnauthorizedException('Password or login no correct');
+			}
+			return user;
 		} catch (error) {
-			console.log('Произошла ошибка: ', error);
-			throw new Error('При авторизации произошла ошибка');
+			throw new BadGatewayException(error);
 		}
-	}
-
-	logout(id: number): string {
-		return `${id} - logout`
 	}
 }
