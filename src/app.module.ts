@@ -4,6 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
+import { StudentsModule } from './students/students.module';
+import { GroupsModule } from './groups/groups.module';
+import { Group } from './groups/group.entity';
+import { Student } from './students/student.entity';
 
 @Module({
 	imports: [
@@ -15,12 +19,14 @@ import { UsersModule } from './users/users.module';
 			port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
 			username: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
-			entities: [User],
+			entities: [User, Group, Student],
 			autoLoadEntities: true,
 			synchronize: true
 		}),
 		AuthModule,
-		UsersModule
+		UsersModule,
+		StudentsModule,
+		GroupsModule
 	]
 })
 export class AppModule {}
