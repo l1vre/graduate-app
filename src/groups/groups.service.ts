@@ -7,25 +7,29 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Group } from './group.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateGroupDto } from './dtos/group-create.dto';
+import { StudentsService } from 'src/students/students.service';
+import { Student } from 'src/students/student.entity';
 
 @Injectable()
 export class GroupsService {
 	constructor(
 		@InjectRepository(Group)
 		private readonly groupRepository: Repository<Group>,
-		private readonly entityManager: EntityManager
+		private readonly entityManager: EntityManager,
+		private readonly studentsService: StudentsService
 	) {}
 
 	async getAll(): Promise<Group[]> {
 		return await this.groupRepository.find();
 	}
 
-	async getOne(code: number): Promise<Group> {
+	async getOne(code: number): Promise<Group & { students: Student[] }> {
 		const group = await this.groupRepository.findOneBy({ code });
 		if(!group) {
 			throw new NotFoundException();
 		}
-		return group;
+		const students = await this.studentsService.findAllFromGroup(code);
+		return { ...group, students };
 	}
 
 	async create(data: CreateGroupDto): Promise<Group> {
