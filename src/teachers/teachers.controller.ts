@@ -5,12 +5,14 @@ import {
 	Get,
 	Param,
 	ParseIntPipe,
+	Patch,
 	Post
 } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { Teacher } from './teacher.entity';
 import { CreateTeacherDto } from './dtos/create-teacher.dto';
 import { ResponseType } from 'src/common/types/response.type';
+import { ChangeGroupDto } from './dtos/change-group.dto';
 
 @Controller('teachers')
 export class TeachersController {
@@ -29,6 +31,14 @@ export class TeachersController {
 	@Post()
 	async create(@Body() data: CreateTeacherDto): Promise<Teacher> {
 		return await this.teachersService.create(data);
+	}
+
+	@Patch(':id')
+	async changeGroup(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() data: ChangeGroupDto
+	): Promise<Teacher> {
+		return await this.teachersService.changeGroup(id, data);
 	}
 
 	@Delete(':id')
