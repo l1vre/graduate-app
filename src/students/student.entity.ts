@@ -21,7 +21,7 @@ export class Student {
 	user_id?: number;
 
 	@Column({ nullable: true })
-	group_id?: number;
+	group_code?: number;
 
 	constructor(student: Partial<Student>) {
 		Object.assign(this, student);
