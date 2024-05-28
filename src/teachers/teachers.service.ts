@@ -8,6 +8,7 @@ import { Teacher } from './teacher.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateTeacherDto } from './dtos/create-teacher.dto';
 import { GroupsService } from 'src/groups/groups.service';
+import { ResponseType } from 'src/common/types/response.type';
 
 @Injectable()
 export class TeachersService {
@@ -36,4 +37,15 @@ export class TeachersService {
 			throw new BadGatewayException(error);
 		}
 	}
+
+	async remove(id: number): Promise<ResponseType> {
+		const teacher = await this.getOne(id);
+		try {
+			this.teachersRepository.delete(teacher.id);
+			return { message: 'success', statusCode: 200 };
+		} catch (error) {
+			throw new BadGatewayException(error);
+		}
+	}
+
 }
