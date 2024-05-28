@@ -23,5 +23,5 @@ export class CreateStudentDto {
 	
 	@IsOptional()
 	@IsString()
-	group_id?: number;
+	group_code?: number;
 }

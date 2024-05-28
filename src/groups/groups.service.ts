@@ -1,7 +1,9 @@
 import {
 	BadGatewayException,
+	Inject,
 	Injectable,
-	NotFoundException
+	NotFoundException,
+	forwardRef
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Group } from './group.entity';
@@ -16,6 +18,7 @@ export class GroupsService {
 		@InjectRepository(Group)
 		private readonly groupRepository: Repository<Group>,
 		private readonly entityManager: EntityManager,
+		@Inject(forwardRef(() => StudentsService))
 		private readonly studentsService: StudentsService
 	) {}
 
@@ -23,10 +26,10 @@ export class GroupsService {
 		return await this.groupRepository.find();
 	}
 
-	async getOne(code: number): Promise<Group & { students: Student[] }> {
+	async getOne(code: number): Promise<Group> {
 		const group = await this.groupRepository.findOneBy({ code });
 		if(!group) {
-			throw new NotFoundException();
+			throw new NotFoundException('group');
 		}
 		const students = await this.studentsService.findAllFromGroup(code);
 		return { ...group, students };
@@ -41,12 +44,13 @@ export class GroupsService {
 	}
 
 	async remove(code: number) {
-		const group = await this.groupRepository.findOneBy({ code });
-		if (!group) {
-			throw new NotFoundException();
-		}
+		const group = await this.getOne(code);
 
+		if(group.students) {
+			group.students.forEach(s => s.group_code = -1);
+			await this.entityManager.save(group.students);
+		}
 		await this.groupRepository.delete(group.id);
-		return { message: 'success', codeStatus: 200 };
+		return { message: 'success', statusCode: 200 };
 	}
 }
