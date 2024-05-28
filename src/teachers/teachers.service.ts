@@ -1,4 +1,8 @@
-import { BadGatewayException, Injectable } from '@nestjs/common';
+import {
+	BadGatewayException,
+	Injectable,
+	NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Teacher } from './teacher.entity';
 import { EntityManager, Repository } from 'typeorm';
@@ -16,6 +20,12 @@ export class TeachersService {
 
 	async getAll(): Promise<Teacher[]> {
 		return this.teachersRepository.find();
+	}
+
+	async getOne(id: number): Promise<Teacher> {
+		const teacher = await this.teachersRepository.findOneBy({ id });
+		if (!teacher) throw new NotFoundException();
+		return teacher;
 	}
 
 	async create(data: CreateTeacherDto): Promise<Teacher> {
