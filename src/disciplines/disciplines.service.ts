@@ -1,7 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+	BadGatewayException,
+	Injectable,
+	NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Discipline } from './discipline.entity';
 import { EntityManager, Repository } from 'typeorm';
+import { CreateDisciplineDto } from './dtos/create-discipline.dto';
+import { EditDisciplineDto } from './dtos/edit-discipline.dto';
 
 @Injectable()
 export class DisciplinesService {
@@ -17,9 +23,28 @@ export class DisciplinesService {
 
 	async getOne(id: number): Promise<Discipline> {
 		const discipline = await this.disciplinesRepository.findOneBy({ id });
-		if(!discipline)
-			throw new NotFoundException('discipline');
+		if (!discipline) throw new NotFoundException('discipline');
 		// потом добавить чтоб можно было смотреть за какими группами закреплена дисциплина
 		return discipline;
+	}
+
+	async create(data: CreateDisciplineDto): Promise<Discipline> {
+		try {
+			return await this.entityManager.save(new Discipline(data));
+		} catch (error) {
+			throw new BadGatewayException(error);
+		}
+	}
+
+	async update(id: number, data: EditDisciplineDto): Promise<Discipline> {
+		try {
+			const discipline = await this.getOne(id);
+			if(data.name) discipline.name = data.name;
+			if(data.code) discipline.code = data.code;
+			await this.entityManager.save(discipline);
+			return discipline;
+		} catch (error) {
+			throw new BadGatewayException(error);
+		}
 	}
 }

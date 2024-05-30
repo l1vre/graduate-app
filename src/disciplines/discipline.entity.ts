@@ -8,7 +8,11 @@ export class Discipline {
 	@Column()
 	name: string;
 
-	@Column()
+	@Column({ unique: true })
 	code: string;
 	// пример 05.01
+
+	constructor(discipline: Partial<Discipline>) {
+		Object.assign(this, discipline);
+	}
 }
