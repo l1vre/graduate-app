@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { DisciplinesService } from './disciplines.service';
 import { Discipline } from './discipline.entity';
 
@@ -9,5 +9,10 @@ export class DisciplinesController {
 	@Get()
 	async getAll(): Promise<Discipline[]> {
 		return await this.disciplinesService.getAll();
+	}
+
+	@Get(':id')
+	async getOne(@Param('id', ParseIntPipe) id: number): Promise<Discipline> {
+		return await this.disciplinesService.getOne(id);
 	}
 }
