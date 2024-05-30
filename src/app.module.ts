@@ -10,6 +10,8 @@ import { Group } from './groups/group.entity';
 import { Student } from './students/student.entity';
 import { TeachersModule } from './teachers/teachers.module';
 import { Teacher } from './teachers/teacher.entity';
+import { DisciplinesModule } from './disciplines/disciplines.module';
+import { Discipline } from './disciplines/discipline.entity';
 
 @Module({
 	imports: [
@@ -21,7 +23,7 @@ import { Teacher } from './teachers/teacher.entity';
 			port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
 			username: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
-			entities: [User, Group, Student, Teacher],
+			entities: [User, Group, Student, Teacher, Discipline],
 			autoLoadEntities: true,
 			synchronize: true
 		}),
@@ -29,7 +31,8 @@ import { Teacher } from './teachers/teacher.entity';
 		UsersModule,
 		StudentsModule,
 		GroupsModule,
-		TeachersModule
+		TeachersModule,
+		DisciplinesModule
 	]
 })
 export class AppModule {}
