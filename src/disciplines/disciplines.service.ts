@@ -8,6 +8,7 @@ import { Discipline } from './discipline.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { CreateDisciplineDto } from './dtos/create-discipline.dto';
 import { EditDisciplineDto } from './dtos/edit-discipline.dto';
+import { ResponseType } from 'src/common/types/response.type';
 
 @Injectable()
 export class DisciplinesService {
@@ -43,6 +44,16 @@ export class DisciplinesService {
 			if(data.code) discipline.code = data.code;
 			await this.entityManager.save(discipline);
 			return discipline;
+		} catch (error) {
+			throw new BadGatewayException(error);
+		}
+	}
+
+	async remove(id: number): Promise<ResponseType> {
+		const discipline = await this.getOne(id);
+		try {
+			this.disciplinesRepository.delete(discipline.id);
+			return { message: 'success', statusCode: 200 };
 		} catch (error) {
 			throw new BadGatewayException(error);
 		}

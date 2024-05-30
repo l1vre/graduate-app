@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	ParseIntPipe,
@@ -11,6 +12,7 @@ import { DisciplinesService } from './disciplines.service';
 import { Discipline } from './discipline.entity';
 import { CreateDisciplineDto } from './dtos/create-discipline.dto';
 import { EditDisciplineDto } from './dtos/edit-discipline.dto';
+import { ResponseType } from 'src/common/types/response.type';
 
 @Controller('disciplines')
 export class DisciplinesController {
@@ -35,7 +37,12 @@ export class DisciplinesController {
 	async update(
 		@Param('id', ParseIntPipe) id: number,
 		@Body() data: EditDisciplineDto
-	) {
+	): Promise<Discipline> {
 		return await this.disciplinesService.update(id, data);
+	}
+
+	@Delete(':id')
+	async remove(@Param('id', ParseIntPipe) id: number): Promise<ResponseType> {
+		return await this.disciplinesService.remove(id);
 	}
 }
