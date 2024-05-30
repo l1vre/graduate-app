@@ -8,6 +8,8 @@ import { StudentsModule } from './students/students.module';
 import { GroupsModule } from './groups/groups.module';
 import { Group } from './groups/group.entity';
 import { Student } from './students/student.entity';
+import { TeachersModule } from './teachers/teachers.module';
+import { Teacher } from './teachers/teacher.entity';
 
 @Module({
 	imports: [
@@ -19,14 +21,15 @@ import { Student } from './students/student.entity';
 			port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
 			username: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
-			entities: [User, Group, Student],
+			entities: [User, Group, Student, Teacher],
 			autoLoadEntities: true,
 			synchronize: true
 		}),
 		AuthModule,
 		UsersModule,
 		StudentsModule,
-		GroupsModule
+		GroupsModule,
+		TeachersModule
 	]
 })
 export class AppModule {}
