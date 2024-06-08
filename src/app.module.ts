@@ -12,6 +12,7 @@ import { TeachersModule } from './teachers/teachers.module';
 import { Teacher } from './teachers/teacher.entity';
 import { DisciplinesModule } from './disciplines/disciplines.module';
 import { Discipline } from './disciplines/discipline.entity';
+import { DisciplineForGroup } from './disciplines/discipline-for-group.entity';
 
 @Module({
 	imports: [
@@ -23,7 +24,14 @@ import { Discipline } from './disciplines/discipline.entity';
 			port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
 			username: process.env.DB_USER,
 			password: process.env.DB_PASSWORD,
-			entities: [User, Group, Student, Teacher, Discipline],
+			entities: [
+				User,
+				Group,
+				Student,
+				Teacher,
+				Discipline,
+				DisciplineForGroup
+			],
 			autoLoadEntities: true,
 			synchronize: true
 		}),

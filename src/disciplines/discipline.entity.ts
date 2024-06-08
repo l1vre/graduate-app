@@ -12,6 +12,10 @@ export class Discipline {
 	code: string;
 	// пример 05.01
 
+	groups?: number[];
+
+	hours?: number[];
+
 	constructor(discipline: Partial<Discipline>) {
 		Object.assign(this, discipline);
 	}

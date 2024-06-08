@@ -13,6 +13,8 @@ import { Discipline } from './discipline.entity';
 import { CreateDisciplineDto } from './dtos/create-discipline.dto';
 import { EditDisciplineDto } from './dtos/edit-discipline.dto';
 import { ResponseType } from 'src/common/types/response.type';
+import { ToggleGroupDto } from './dtos/toggle-group.dto';
+import { DisciplineForGroup } from './discipline-for-group.entity';
 
 @Controller('disciplines')
 export class DisciplinesController {
@@ -31,6 +33,14 @@ export class DisciplinesController {
 	@Post()
 	async create(@Body() data: CreateDisciplineDto): Promise<Discipline> {
 		return await this.disciplinesService.create(data);
+	}
+
+	@Patch(':id')
+	async toggleGroup(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() data: ToggleGroupDto
+	): Promise<DisciplineForGroup | Discipline> {
+		return await this.disciplinesService.toggleGroup(id, data);
 	}
 
 	@Patch(':id')
